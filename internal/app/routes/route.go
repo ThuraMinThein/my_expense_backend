@@ -8,4 +8,5 @@ import (
 func RegisterRoutes(r *gin.Engine, h *handlers.Handlers) {
 	authRoutes(r, h)
 	userRoutes(r, h)
+	expenseRoutes(r, h)
 }

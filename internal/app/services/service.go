@@ -5,14 +5,16 @@ import (
 )
 
 type Services struct {
-	Auth  *AuthService
-	Users *UserService
+	Auth    *AuthService
+	Users   *UserService
+	Expense ExpenseService
 }
 
 func NewServices(repositories *repositories.Repositories) *Services {
 
 	return &Services{
-		Auth:  &AuthService{repositories},
-		Users: &UserService{repository: repositories},
+		Auth:    &AuthService{repositories},
+		Users:   &UserService{repository: repositories},
+		Expense: NewExpenseService(repositories.Expense),
 	}
 }
