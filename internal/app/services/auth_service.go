@@ -148,3 +148,59 @@ func (as *AuthService) hasUsernameOrEmail(req *api_structs.CreateUserRequest) (b
 
 	return false, nil
 }
+
+func (as *AuthService) GoogleLogin(googleUser *models.GoogleUserInfo) (*models.UserToken, error) {
+	user, err := as.repositories.Users.GetByGoogleID(googleUser.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		user, err = as.repositories.Users.GetByEmail(googleUser.Email)
+		if err != nil {
+			return nil, err
+		}
+
+		if user == nil {
+			newUser := &models.User{
+				Username:     googleUser.Email,
+				Email:        googleUser.Email,
+				GoogleID:     googleUser.ID,
+				AuthProvider: "google",
+				Profile:      googleUser.Picture,
+			}
+
+			err = as.repositories.Users.Create(newUser)
+			if err != nil {
+				return nil, err
+			}
+			user = newUser
+		} else {
+			user.GoogleID = googleUser.ID
+			user.AuthProvider = "google"
+			user.Profile = googleUser.Picture
+			_, err = as.repositories.Users.Update(user)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	accessToken, refreshToken, err := helper.GetTokens(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	userToken := &models.UserToken{
+		UserId:       user.ID,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}
+
+	err = as.repositories.Users.UpdateToken(userToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return userToken, nil
+}

@@ -132,3 +132,61 @@ func removeCookie(c *gin.Context) {
 
 	c.SetCookie("refreshToken", "", -1, "/", domain, secure, true)
 }
+
+func (a *authHandler) GoogleAuthURL(c *gin.Context) {
+	state := "random-state-string" // In production, use a secure random state
+	authURL := helper.GetGoogleAuthURL(state)
+	c.JSON(http.StatusOK, gin.H{"auth_url": authURL})
+}
+
+func (a *authHandler) GoogleCallback(c *gin.Context) {
+	code := c.Query("code")
+	if code == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "authorization code not provided"})
+		return
+	}
+
+	token, err := helper.ExchangeGoogleCode(code)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to exchange code"})
+		return
+	}
+
+	userInfo, err := helper.GetGoogleUserInfo(token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to get user info"})
+		return
+	}
+
+	userToken, err := a.service.GoogleLogin(userInfo)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to login with google"})
+		return
+	}
+
+	setCookie(c, userToken.RefreshToken)
+	c.JSON(http.StatusOK, userToken)
+}
+
+func (a *authHandler) GoogleLoginWithToken(c *gin.Context) {
+	var request api_structs.GoogleAuthRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error_binding": err.Error()})
+		return
+	}
+
+	userInfo, err := helper.VerifyGoogleIDToken(request.IDToken)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id token"})
+		return
+	}
+
+	userToken, err := a.service.GoogleLogin(userInfo)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to login with google"})
+		return
+	}
+
+	setCookie(c, userToken.RefreshToken)
+	c.JSON(http.StatusOK, userToken)
+}

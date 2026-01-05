@@ -12,6 +12,9 @@ func authRoutes(r *gin.Engine, h *handlers.Handlers) {
 		auth.POST("/sign-up", h.AuthHandler.SignUp)
 		auth.POST("/login", h.AuthHandler.Login)
 		auth.POST("/refresh", h.AuthHandler.Refresh)
+		auth.GET("/google", h.AuthHandler.GoogleAuthURL)
+		auth.GET("/google/callback", h.AuthHandler.GoogleCallback)
+		auth.POST("/google/token", h.AuthHandler.GoogleLoginWithToken)
 	}
 	protected := auth.Use(middlewares.AuthMiddleware())
 	{

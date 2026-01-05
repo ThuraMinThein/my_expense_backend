@@ -6,11 +6,13 @@ import (
 
 type User struct {
 	gorm.Model
-	Profile   string    `json:"profile"`
-	Username  string    `json:"username" gorm:"unique"`
-	Email     string    `json:"email" binding:"required" gorm:"unique"`
-	Password  string    `json:"-" binding:"required"`
-	UserToken UserToken `json:"-" gorm:"foreignKey:UserId"`
+	Profile      string    `json:"profile"`
+	Username     string    `json:"username" gorm:"unique"`
+	Email        string    `json:"email" binding:"required" gorm:"unique"`
+	Password     string    `json:"-"`
+	GoogleID     string    `json:"google_id" gorm:"unique"`
+	AuthProvider string    `json:"auth_provider" gorm:"default:'local'"`
+	UserToken    UserToken `json:"-" gorm:"foreignKey:UserId"`
 }
 
 type UserToken struct {

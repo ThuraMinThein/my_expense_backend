@@ -12,6 +12,7 @@ import (
 	"github.com/ThuraMinThein/my_expense_backend/config"
 	"github.com/ThuraMinThein/my_expense_backend/db"
 	"github.com/ThuraMinThein/my_expense_backend/internal/app/handlers"
+	"github.com/ThuraMinThein/my_expense_backend/internal/app/helper"
 	"github.com/ThuraMinThein/my_expense_backend/internal/app/repositories"
 	"github.com/ThuraMinThein/my_expense_backend/internal/app/routes"
 	"github.com/ThuraMinThein/my_expense_backend/internal/app/services"
@@ -27,6 +28,12 @@ func main() {
 	setupLogger()
 
 	config.LoadConfig()
+
+	helper.InitGoogleOAuth(
+		config.Config.GoogleClientID,
+		config.Config.GoogleClientSecret,
+		config.Config.GoogleRedirectURL,
+	)
 
 	migrateDatabase := false
 	if err := db.DatabaseInit(migrateDatabase); err != nil {

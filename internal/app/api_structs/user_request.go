@@ -16,3 +16,7 @@ type UpdateUserRequest struct {
 	Email    string `json:"email" form:"email"`
 	Password string `json:"-" form:"password"`
 }
+
+type GoogleAuthRequest struct {
+	IDToken string `json:"id_token" binding:"required"`
+}

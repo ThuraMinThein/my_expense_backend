@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ThuraMinThein/my_expense_backend/config"
+	"github.com/ThuraMinThein/my_expense_backend/internal/app/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -34,7 +35,7 @@ func DatabaseInit(migrateDatabase bool) error {
 	}
 
 	if migrateDatabase {
-		// DB.AutoMigrate(&models.User{})
+		DB.AutoMigrate(&models.User{}, &models.UserToken{})
 	}
 
 	return nil

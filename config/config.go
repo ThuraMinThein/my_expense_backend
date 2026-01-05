@@ -19,6 +19,9 @@ type AppConfig struct {
 	Environment         string
 	GinMode             string
 	Domain              string
+	GoogleClientID      string
+	GoogleClientSecret  string
+	GoogleRedirectURL   string
 }
 
 var Config *AppConfig
@@ -42,6 +45,9 @@ func LoadConfig() {
 		Environment:         os.Getenv("ENVIRONMENT"),
 		GinMode:             os.Getenv("GIN_MODE"),
 		Domain:              os.Getenv("DOMAIN"),
+		GoogleClientID:      os.Getenv("GOOGLE_CLIENT_ID"),
+		GoogleClientSecret:  os.Getenv("GOOGLE_CLIENT_SECRET"),
+		GoogleRedirectURL:   os.Getenv("GOOGLE_REDIRECT_URL"),
 	}
 
 }

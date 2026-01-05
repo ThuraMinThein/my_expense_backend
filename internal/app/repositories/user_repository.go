@@ -57,6 +57,19 @@ func (u *UserStore) GetByUsername(username string) (*models.User, error) {
 	return user, nil
 }
 
+func (u *UserStore) GetByGoogleID(googleID string) (*models.User, error) {
+	var user *models.User
+	result := u.db.Find(&user, "google_id = ?", googleID)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return nil, nil
+	}
+	return user, nil
+}
+
 func (u *UserStore) GetByRefreshToken(userId uint64, token string) (*models.User, error) {
 	var user *models.User
 	err := u.db.
