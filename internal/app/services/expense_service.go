@@ -24,6 +24,7 @@ type expenseService struct {
 }
 
 type CreateExpenseRequest struct {
+	Name        string  `json:"name" binding:"required"`
 	Amount      float64 `json:"amount" binding:"required,gt=0"`
 	Category    string  `json:"category" binding:"required"`
 	Note        string  `json:"note"`
@@ -54,7 +55,8 @@ func (s *expenseService) CreateExpense(req CreateExpenseRequest, userID uint) (*
 
 	expense := &models.Expense{
 		UserID:      userID,
-		Amount:      req.Amount,
+		Name:        strings.TrimSpace(req.Name),
+		Amount:      fmt.Sprintf("%f", req.Amount),
 		Category:    strings.TrimSpace(req.Category),
 		Note:        strings.TrimSpace(req.Note),
 		ExpenseDate: expenseDate,

@@ -27,15 +27,15 @@ func LoggingMiddleware() gin.HandlerFunc {
 		c.Next()
 		duration := time.Since(start)
 
-		reqID, _ := c.Get("RequestID")
+		// reqID, _ := c.Get("RequestID")
 		logrus.WithFields(logrus.Fields{
 			"status":      c.Writer.Status(),
 			"method":      c.Request.Method,
 			"path":        c.Request.URL.Path,
-			"client_ip":   c.ClientIP(),
-			"user_agent":  c.Request.UserAgent(),
+			// "client_ip":   c.ClientIP(),
+			// "user_agent":  c.Request.UserAgent(),
 			"latency_ms":  duration.Milliseconds(),
-			"request_id":  reqID,
+			// "request_id":  reqID,
 			"resp_length": c.Writer.Size(),
 		}).Info("HTTP request completed")
 	}

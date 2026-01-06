@@ -35,7 +35,7 @@ func DatabaseInit(migrateDatabase bool) error {
 	}
 
 	if migrateDatabase {
-		DB.AutoMigrate(&models.User{}, &models.UserToken{})
+		DB.AutoMigrate(&models.User{}, &models.UserToken{}, &models.Expense{})
 	}
 
 	return nil

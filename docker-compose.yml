@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  my-expense-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my-expense-backend
+    image: cosmtrek/air
+    working_dir: /app
+    env_file:
+      - .env
+    ports:
+      - 3333:3333
+    volumes:
+      - ./:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:alpine
+    container_name: postgres-my-expense
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'pg_isready -U ${DATABASE_USERNAME} -d ${DATABASE_NAME}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
