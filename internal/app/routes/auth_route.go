@@ -9,7 +9,7 @@ import (
 func authRoutes(r *gin.Engine, h *handlers.Handlers) {
 	auth := r.Group("auth")
 	{
-		auth.POST("/sign-up", h.AuthHandler.SignUp)
+		auth.POST("/register", h.AuthHandler.SignUp)
 		auth.POST("/login", h.AuthHandler.Login)
 		auth.POST("/refresh", h.AuthHandler.Refresh)
 		auth.GET("/google", h.AuthHandler.GoogleAuthURL)
