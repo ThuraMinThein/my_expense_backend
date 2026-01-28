@@ -6,9 +6,8 @@ type LoginRequest struct {
 }
 
 type CreateUserRequest struct {
-	Username string `json:"username" form:"username" binding:"required"`
 	Email    string `json:"email" form:"email"`
-	Password string `json:"-" form:"password" binding:"required"`
+	Password string `form:"password" binding:"required"`
 }
 
 type UpdateUserRequest struct {

@@ -57,7 +57,7 @@ func (r *expenseRepository) GetByUserID(userID uint, from, to string) ([]models.
 	if from != "" && to != "" {
 		query = query.Where("expense_date BETWEEN ? AND ?", from, to)
 	} else {
-		query = query.Where("expense_date >= ?", "NOW() - INTERVAL '30 days'")
+		query = query.Where("expense_date >= NOW() - INTERVAL '30 days'")
 	}
 
 	err := query.Order("expense_date DESC").Find(&expenses).Error
