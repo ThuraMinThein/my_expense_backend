@@ -21,7 +21,7 @@ func (a *authHandler) SignUp(c *gin.Context) {
 		return
 	}
 
-	user, err := a.service.SingUp(&request)
+	res, err := a.service.SingUp(&request)
 	if err != nil {
 		if err.Error() == "username or email has already exist" {
 			c.JSON(http.StatusConflict, gin.H{"error creating": err.Error()})
@@ -31,9 +31,9 @@ func (a *authHandler) SignUp(c *gin.Context) {
 		return
 	}
 
-	setCookie(c, user.RefreshToken)
+	setCookie(c, res.RefreshToken)
 
-	c.JSON(http.StatusCreated, user)
+	c.JSON(http.StatusCreated, res)
 }
 
 func (a *authHandler) Login(c *gin.Context) {
@@ -43,7 +43,7 @@ func (a *authHandler) Login(c *gin.Context) {
 		return
 	}
 
-	loginData, err := a.service.Login(&request)
+	res, err := a.service.Login(&request)
 
 	if err != nil {
 		if err.Error() == "credential error" {
@@ -54,9 +54,9 @@ func (a *authHandler) Login(c *gin.Context) {
 		return
 	}
 
-	setCookie(c, loginData.RefreshToken)
+	setCookie(c, res.RefreshToken)
 
-	c.JSON(http.StatusOK, loginData)
+	c.JSON(http.StatusOK, res)
 }
 
 func (a *authHandler) Refresh(c *gin.Context) {

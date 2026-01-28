@@ -1,5 +1,7 @@
 package api_structs
 
+import "github.com/ThuraMinThein/my_expense_backend/internal/app/models"
+
 type LoginRequest struct {
 	Username string `json:"username" binding:"required"`
 	Password string `binding:"required"`
@@ -19,4 +21,10 @@ type UpdateUserRequest struct {
 
 type GoogleAuthRequest struct {
 	IDToken string `json:"id_token" binding:"required"`
+}
+
+type AuthResponse struct {
+	AccessToken  string      `json:"access_token"`
+	RefreshToken string      `json:"-"`
+	User         models.User `json:"user"`
 }

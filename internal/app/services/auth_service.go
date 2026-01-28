@@ -13,7 +13,7 @@ type AuthService struct {
 	repositories *repositories.Repositories
 }
 
-func (as *AuthService) SingUp(request *api_structs.CreateUserRequest) (*models.UserToken, error) {
+func (as *AuthService) SingUp(request *api_structs.CreateUserRequest) (*api_structs.AuthResponse, error) {
 	hasUser, err := as.hasUsernameOrEmail(request)
 	if err != nil {
 		return nil, err
@@ -49,10 +49,15 @@ func (as *AuthService) SingUp(request *api_structs.CreateUserRequest) (*models.U
 		return nil, err
 	}
 
-	return userToken, nil
+	response := &api_structs.AuthResponse{
+		AccessToken: accessToken,
+		User:        *userModel,
+	}
+
+	return response, nil
 }
 
-func (as *AuthService) Login(request *api_structs.LoginRequest) (*models.UserToken, error) {
+func (as *AuthService) Login(request *api_structs.LoginRequest) (*api_structs.AuthResponse, error) {
 
 	user, err := as.repositories.Users.GetByEmailOrUsername(request.Username)
 	if err != nil {
@@ -83,7 +88,12 @@ func (as *AuthService) Login(request *api_structs.LoginRequest) (*models.UserTok
 		return nil, err
 	}
 
-	return userToken, nil
+	response := &api_structs.AuthResponse{
+		AccessToken: accessToken,
+		User:        *user,
+	}
+
+	return response, nil
 }
 
 func (as *AuthService) Refresh(userId uint64, token string) (*models.UserToken, error) {
